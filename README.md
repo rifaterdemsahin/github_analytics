@@ -5,7 +5,7 @@
 ## 🔗 Live pages
 
 - 🌐 GitHub Pages: https://rifaterdemsahin.github.io/github_analytics/
-- ⚡ Cloudflare Pages: _pending first deploy_
+- ⚡ Cloudflare Worker: https://github-analytics.polished-boat-17b2.workers.dev
 
 ## What's in the report
 
