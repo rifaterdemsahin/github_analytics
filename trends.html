@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Erdem's GitHub Trends</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+*,*::before,*::after{box-sizing:border-box;}
+:root{
+  --bg:#f5f4f0; --surface:#ffffff; --surface-2:#eeece4; --border:#dcd8ce;
+  --ink:#1b1e1f; --ink-muted:#5c6360; --ink-faint:#8a908c;
+  --accent:#1f6e63; --accent-ink:#ffffff; --accent-soft:#dbe9e6; --accent-soft-ink:#164f47;
+  --gold:#a9791f; --gold-soft:#f1e6cd;
+  --c2:#7a5aa8; --c3:#c0602f; --c4:#3a72b0; --c5:#8a8f86;
+  --radius:10px;
+  --mono:'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --sans:'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#14181a; --surface:#1b2224; --surface-2:#212a2c; --border:#30393b;
+    --ink:#e9ece9; --ink-muted:#a1aba7; --ink-faint:#6f7876;
+    --accent:#57d6c4; --accent-ink:#0b201c; --accent-soft:#1d3c37; --accent-soft-ink:#9fe9dc;
+    --gold:#e0b566; --gold-soft:#382d15;
+    --c2:#a992d6; --c3:#e08a56; --c4:#6fa3d8; --c5:#9ba09a;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#14181a; --surface:#1b2224; --surface-2:#212a2c; --border:#30393b;
+  --ink:#e9ece9; --ink-muted:#a1aba7; --ink-faint:#6f7876;
+  --accent:#57d6c4; --accent-ink:#0b201c; --accent-soft:#1d3c37; --accent-soft-ink:#9fe9dc;
+  --gold:#e0b566; --gold-soft:#382d15;
+  --c2:#a992d6; --c3:#e08a56; --c4:#6fa3d8; --c5:#9ba09a;
+}
+body{background:var(--bg); color:var(--ink); font-family:var(--sans); line-height:1.5;}
+h1,h2,h3{font-family:var(--mono); text-wrap:balance; margin:0; letter-spacing:-0.01em;}
+a{color:var(--accent);}
+::selection{background:var(--accent-soft); color:var(--accent-soft-ink);}
+
+.wrap{max-width:1100px; margin:0 auto; padding:2.5rem 1.5rem 5rem;}
+
+header.top{display:flex; flex-wrap:wrap; gap:1.5rem; align-items:flex-end; justify-content:space-between; padding-bottom:1.75rem; border-bottom:1px solid var(--border); margin-bottom:2rem;}
+.title-block .eyebrow{font-family:var(--mono); font-size:0.72rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--accent); margin-bottom:0.5rem; display:flex; gap:0.5em; align-items:center;}
+.title-block h1{font-size:clamp(1.6rem, 3vw, 2.3rem); font-weight:600;}
+.title-block p{color:var(--ink-muted); margin:0.4rem 0 0; max-width:56ch; font-size:0.95rem;}
+.backlink{font-family:var(--mono); font-size:0.82rem; background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:0.55rem 0.9rem; text-decoration:none; white-space:nowrap;}
+.backlink:hover{border-color:var(--accent);}
+
+section{margin-bottom:3rem;}
+.section-head{display:flex; align-items:baseline; gap:0.6rem; margin-bottom:0.5rem;}
+.section-head h2{font-size:1.15rem; font-weight:600;}
+.section-head .n{color:var(--ink-faint); font-size:0.8rem; font-family:var(--mono);}
+.lede{color:var(--ink-muted); font-size:0.92rem; max-width:72ch; margin:0 0 1.3rem;}
+
+.card{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:1.4rem 1.5rem;}
+
+.callout-row{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:1px; background:var(--border); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; margin-bottom:2.5rem;}
+.callout{background:var(--surface); padding:1.1rem 1.3rem;}
+.callout .icon{font-size:1.1rem;}
+.callout .headline{font-family:var(--mono); font-weight:600; font-size:0.95rem; margin-top:0.4rem;}
+.callout .sub{color:var(--ink-muted); font-size:0.8rem; margin-top:0.3rem;}
+
+svg text{font-family:var(--mono); fill:var(--ink-muted);}
+.axis-line{stroke:var(--border); stroke-width:1;}
+.gridline{stroke:var(--border); stroke-width:1; stroke-dasharray:2 3;}
+
+.legend{display:flex; flex-wrap:wrap; gap:0.9rem; margin-top:1rem; font-size:0.8rem; font-family:var(--mono);}
+.legend .item{display:flex; align-items:center; gap:0.4rem;}
+.legend .swatch{width:11px; height:11px; border-radius:3px; display:inline-block;}
+
+.tip{position:absolute; background:var(--ink); color:var(--bg); font-family:var(--mono); font-size:0.72rem; padding:0.35rem 0.55rem; border-radius:6px; pointer-events:none; opacity:0; transition:opacity 0.1s; white-space:nowrap; z-index:5;}
+.chart-holder{position:relative;}
+
+footer.pagefoot{margin-top:3rem; padding-top:1.5rem; border-top:1px solid var(--border); color:var(--ink-faint); font-size:0.78rem; font-family:var(--mono); display:flex; justify-content:space-between; flex-wrap:wrap; gap:0.5rem;}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="top">
+    <div class="title-block">
+      <div class="eyebrow">📈 trend analysis</div>
+      <h1>From shell scripts to AI agents</h1>
+      <p>Monthly repo creation, language mix and category share since 2024 for <a href="https://github.com/rifaterdemsahin" target="_blank" rel="noopener">github.com/rifaterdemsahin</a> — the shape of the recent build-out, not just the totals.</p>
+    </div>
+    <a class="backlink" href="./index.html">← back to full report</a>
+  </header>
+
+  <div class="callout-row" id="calloutRow"></div>
+
+  <section>
+    <div class="section-head"><h2>🗓️ Monthly repo creation</h2><span class="n">Jan 2024 – Sep 2026</span></div>
+    <p class="lede">Three visible surges: <b>Sep–Oct 2024</b> (31 repos in October alone), <b>Feb 2026</b> (32 repos), and <b>Jul 2026</b> — the single busiest month on record at 62 new repos.</p>
+    <div class="card chart-holder">
+      <svg id="monthChart" viewBox="0 0 1000 320" style="width:100%; height:auto;"></svg>
+      <div class="tip" id="monthTip"></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head"><h2>💻 Language mix, year over year</h2><span class="n">share of repos created that year</span></div>
+    <p class="lede">2024 was Shell-dominant — infrastructure and DevOps scripting. By 2026, HTML takes over the majority share, tracking the shift toward generated report pages, static sites and scaffolded AI-agent front-ends rather than backend scripting.</p>
+    <div class="card chart-holder">
+      <svg id="langChart" viewBox="0 0 1000 340" style="width:100%; height:auto;"></svg>
+      <div class="tip" id="langTip"></div>
+      <div class="legend" id="langLegend"></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head"><h2>🧭 Category share, year over year</h2><span class="n">keyword-matched use case</span></div>
+    <p class="lede">"AI &amp; Agents" grows from 3 repos pre-2024 to 70 in 2026 alone — now the single largest category by a wide margin, overtaking DevOps &amp; Cloud, certification prep and general automation combined.</p>
+    <div class="card chart-holder">
+      <svg id="catChart" viewBox="0 0 1000 340" style="width:100%; height:auto;"></svg>
+      <div class="tip" id="catTip"></div>
+      <div class="legend" id="catLegend"></div>
+    </div>
+  </section>
+
+  <footer class="pagefoot">
+    <span>Source: GitHub REST API, unauthenticated · public data only</span>
+    <span>Generated 2026-09-05</span>
+  </footer>
+</div>
+
+<script>
+const DATA = {"months":[["2024-01",0],["2024-02",0],["2024-03",0],["2024-04",1],["2024-05",6],["2024-06",1],["2024-07",2],["2024-08",12],["2024-09",26],["2024-10",31],["2024-11",15],["2024-12",6],["2025-01",9],["2025-02",9],["2025-03",9],["2025-04",1],["2025-05",3],["2025-06",5],["2025-07",3],["2025-08",3],["2025-09",5],["2025-10",14],["2025-11",10],["2025-12",9],["2026-01",15],["2026-02",32],["2026-03",13],["2026-04",2],["2026-05",15],["2026-06",19],["2026-07",62],["2026-08",35],["2026-09",2]],"years_order":["pre-2024","2024","2025","2026"],"lang_order":["HTML","Shell","Python","JavaScript","C#","TypeScript","Other"],"lang_by_year":{"pre-2024":{"HTML":3,"Shell":0,"Python":1,"JavaScript":1,"C#":4,"TypeScript":0,"Other":9},"2024":{"HTML":6,"Shell":23,"Python":7,"JavaScript":2,"C#":5,"TypeScript":0,"Other":57},"2025":{"HTML":21,"Shell":21,"Python":13,"JavaScript":6,"C#":1,"TypeScript":1,"Other":17},"2026":{"HTML":134,"Shell":2,"Python":10,"JavaScript":16,"C#":1,"TypeScript":6,"Other":26}},"cat_order":["AI & Agents","DevOps & Cloud","Certification & Learning","Automation & Tools","Other"],"cat_by_year":{"pre-2024":{"AI & Agents":3,"DevOps & Cloud":5,"Certification & Learning":1,"Automation & Tools":0,"Other":9},"2024":{"AI & Agents":17,"DevOps & Cloud":13,"Certification & Learning":4,"Automation & Tools":5,"Other":61},"2025":{"AI & Agents":22,"DevOps & Cloud":7,"Certification & Learning":3,"Automation & Tools":6,"Other":42},"2026":{"AI & Agents":70,"DevOps & Cloud":7,"Certification & Learning":5,"Automation & Tools":19,"Other":94}}};
+const CATCOLORS = { 'AI & Agents':'var(--accent)', 'DevOps & Cloud':'var(--c4)', 'Certification & Learning':'var(--gold)', 'Automation & Tools':'var(--c2)', 'Other':'var(--c5)' };
+const LANGCOLORS = { 'HTML':'var(--c3)', 'Shell':'var(--accent)', 'Python':'var(--c4)', 'JavaScript':'var(--gold)', 'C#':'var(--c2)', 'TypeScript':'var(--c5)', 'Other':'var(--border)', 'None':'var(--border)' };
+
+function resolveColor(v){
+  if(v.startsWith('var(')){
+    return getComputedStyle(document.documentElement).getPropertyValue(v.slice(4,-1)).trim();
+  }
+  return v;
+}
+
+// ---- callouts ----
+const months = DATA.months;
+const busiest = months.reduce((a,b)=> b[1]>a[1]?b:a, months[0]);
+const totalSince2024 = months.reduce((a,[,c])=>a+c,0);
+const aiPre = DATA.cat_by_year['pre-2024']['AI & Agents'];
+const ai2026 = DATA.cat_by_year['2026']['AI & Agents'];
+const callouts = [
+  ['🚀', busiest[1]+' repos in '+busiest[0], 'busiest single month'],
+  ['📦', totalSince2024, 'repos created since Jan 2024'],
+  ['🤖', aiPre+' → '+ai2026, 'AI & Agents repos: pre-2024 vs 2026'],
+  ['🐚', '23% → 1%', "Shell's share of new repos, 2024 vs 2026"],
+];
+document.getElementById('calloutRow').innerHTML = callouts.map(([icon,head,sub])=>`
+  <div class="callout"><div class="icon">${icon}</div><div class="headline">${head}</div><div class="sub">${sub}</div></div>
+`).join('');
+
+// ---- month area chart ----
+(function(){
+  const svg = document.getElementById('monthChart');
+  const tip = document.getElementById('monthTip');
+  const W=1000,H=320, padL=40, padR=20, padT=20, padB=40;
+  const plotW = W-padL-padR, plotH = H-padT-padB;
+  const maxV = Math.max(...months.map(m=>m[1]));
+  const n = months.length;
+  const x = i => padL + (i/(n-1))*plotW;
+  const y = v => padT + plotH - (v/maxV)*plotH;
+
+  let path = `M ${x(0)} ${y(months[0][1])}`;
+  months.forEach((m,i)=>{ if(i>0) path += ` L ${x(i)} ${y(m[1])}`; });
+  let area = path + ` L ${x(n-1)} ${padT+plotH} L ${x(0)} ${padT+plotH} Z`;
+
+  let svgHtml = '';
+  // gridlines
+  [0,0.25,0.5,0.75,1].forEach(f=>{
+    const gy = padT + plotH*(1-f);
+    svgHtml += `<line class="gridline" x1="${padL}" x2="${W-padR}" y1="${gy}" y2="${gy}"/>`;
+    svgHtml += `<text x="${padL-8}" y="${gy+4}" font-size="11" text-anchor="end">${Math.round(maxV*f)}</text>`;
+  });
+  svgHtml += `<line class="axis-line" x1="${padL}" x2="${W-padR}" y1="${padT+plotH}" y2="${padT+plotH}"/>`;
+  // x labels: every 3rd month
+  months.forEach((m,i)=>{
+    if(i%3===0){
+      svgHtml += `<text x="${x(i)}" y="${H-14}" font-size="10.5" text-anchor="middle">${m[0]}</text>`;
+    }
+  });
+  const accentColor = resolveColor('var(--accent)');
+  const accentSoft = resolveColor('var(--accent-soft)');
+  svgHtml += `<path d="${area}" fill="${accentSoft}" opacity="0.7"/>`;
+  svgHtml += `<path d="${path}" fill="none" stroke="${accentColor}" stroke-width="2.5"/>`;
+  months.forEach((m,i)=>{
+    svgHtml += `<circle cx="${x(i)}" cy="${y(m[1])}" r="4" fill="${accentColor}" data-m="${m[0]}" data-v="${m[1]}" class="pt" style="cursor:pointer;"/>`;
+  });
+  svg.innerHTML = svgHtml;
+
+  svg.querySelectorAll('.pt').forEach(pt=>{
+    pt.addEventListener('mouseenter', e=>{
+      const rect = svg.getBoundingClientRect();
+      const cx = parseFloat(pt.getAttribute('cx')), cy = parseFloat(pt.getAttribute('cy'));
+      tip.textContent = `${pt.dataset.m}: ${pt.dataset.v} repos`;
+      tip.style.left = (cx/W*rect.width) + 'px';
+      tip.style.top = (cy/H*rect.height - 28) + 'px';
+      tip.style.opacity = 1;
+    });
+    pt.addEventListener('mouseleave', ()=>{ tip.style.opacity=0; });
+  });
+})();
+
+// ---- stacked bar helper ----
+function stackedBars(svgId, legendId, tipId, order, byYear, colorMap){
+  const svg = document.getElementById(svgId);
+  const tip = document.getElementById(tipId);
+  const years = DATA.years_order;
+  const W=1000,H=340, padL=44, padR=20, padT=20, padB=40;
+  const plotW = W-padL-padR, plotH = H-padT-padB;
+  const totals = years.map(y=> order.reduce((s,k)=>s+byYear[y][k],0));
+  const maxTotal = Math.max(...totals);
+  const bw = plotW/years.length*0.55;
+  const gap = plotW/years.length;
+
+  let svgHtml = '';
+  [0,0.25,0.5,0.75,1].forEach(f=>{
+    const gy = padT + plotH*(1-f);
+    svgHtml += `<line class="gridline" x1="${padL}" x2="${W-padR}" y1="${gy}" y2="${gy}"/>`;
+    svgHtml += `<text x="${padL-8}" y="${gy+4}" font-size="11" text-anchor="end">${Math.round(maxTotal*f)}</text>`;
+  });
+  svgHtml += `<line class="axis-line" x1="${padL}" x2="${W-padR}" y1="${padT+plotH}" y2="${padT+plotH}"/>`;
+
+  years.forEach((yr,i)=>{
+    const cx = padL + gap*i + gap/2;
+    svgHtml += `<text x="${cx}" y="${H-14}" font-size="12" text-anchor="middle">${yr}</text>`;
+    let cum = 0;
+    order.forEach(cat=>{
+      const v = byYear[yr][cat];
+      if(v===0) return;
+      const barH = (v/maxTotal)*plotH;
+      const yTop = padT + plotH - (cum+v)/maxTotal*plotH;
+      const col = resolveColor(colorMap[cat]);
+      svgHtml += `<rect x="${cx-bw/2}" y="${yTop}" width="${bw}" height="${barH}" fill="${col}" data-cat="${cat}" data-yr="${yr}" data-v="${v}" class="seg" style="cursor:pointer;"/>`;
+      cum += v;
+    });
+    svgHtml += `<text x="${cx}" y="${padT+plotH-cum/maxTotal*plotH-8}" font-size="11.5" text-anchor="middle" font-weight="600" fill="var(--ink)">${totals[i]}</text>`;
+  });
+  svg.innerHTML = svgHtml;
+
+  svg.querySelectorAll('.seg').forEach(seg=>{
+    seg.addEventListener('mouseenter', ()=>{
+      const rect = svg.getBoundingClientRect();
+      const x = parseFloat(seg.getAttribute('x'))+parseFloat(seg.getAttribute('width'))/2;
+      const y = parseFloat(seg.getAttribute('y'));
+      tip.textContent = `${seg.dataset.yr} · ${seg.dataset.cat}: ${seg.dataset.v}`;
+      tip.style.left = (x/W*rect.width) + 'px';
+      tip.style.top = (y/H*rect.height - 28) + 'px';
+      tip.style.opacity = 1;
+    });
+    seg.addEventListener('mouseleave', ()=>{ tip.style.opacity=0; });
+  });
+
+  document.getElementById(legendId).innerHTML = order.map(cat=>`
+    <div class="item"><span class="swatch" style="background:${resolveColor(colorMap[cat])}"></span>${cat}</div>
+  `).join('');
+}
+
+stackedBars('langChart','langLegend','langTip', DATA.lang_order, DATA.lang_by_year, LANGCOLORS);
+stackedBars('catChart','catLegend','catTip', DATA.cat_order, DATA.cat_by_year, CATCOLORS);
+</script>
+</body>
+</html>
